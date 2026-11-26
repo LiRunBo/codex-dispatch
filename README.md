@@ -28,11 +28,16 @@ Run `python scripts/dispatch.py task.json --dry-run` to preview and `python scri
 - 这次代码你自己写。
 
 ## Scope
-v0.2.0 development prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, automatic skill discovery, session resume or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
+v0.3.0 development prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, session resume or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
 
 ## Tests
 `python -m unittest discover -s tests -v`
 
 
 ## Routing and evaluation
-The main skill loads references/routing-policy.md and scenario workflows on demand. Professional skills remain in the Antigravity global library. See evals/README.md for 20 behavioral test cases and the proposed release gate. The cases are specified, not yet measured against a live host. Global skill discovery remains agent-driven; there is no separate registry or automatic resolver script.
+The main skill loads references/routing-policy.md and scenario workflows on demand. Professional skills remain in the Antigravity global library. See evals/README.md for 20 behavioral test cases and the proposed release gate. The cases are specified, not yet measured against a live host. Global skill discovery now uses the optional resolver helper; there is no separate registry.
+
+## Setup helpers
+Chinese documentation: [README.zh-CN.md](README.zh-CN.md).
+
+From the checkout, `python scripts/install.py "<actual global skills directory>"` copies the skill without overwriting an existing installation. From the installed directory, `python scripts/doctor.py` probes Python, Codex version and login status, without invoking a model. `python scripts/skill_resolver.py` lists global sibling skills; append exact names to resolve their paths. Additional roots may be supplied with `--root` or CODEX_DISPATCH_SKILL_ROOTS (OS path separator). Ambiguities require selection. Discovery assumes conventional single-level folders with simple name frontmatter, and does not establish runtime compatibility or grant access.
