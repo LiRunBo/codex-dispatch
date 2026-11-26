@@ -44,13 +44,16 @@ def load_previous(root, run_id, workspace, sandbox):
     if run.parent != root:
         raise ValueError('Previous run escapes local run directory')
     status = json.loads((run / 'status.json').read_text(encoding='utf-8'))
+    if not isinstance(status, dict):
+        raise ValueError('Invalid previous run record')
     if status.get('state') != 'completed' or not valid_id(status.get('session_id')):
         raise ValueError('Only a completed run with a recorded session can be resumed')
-    if Path(status.get('workspace', '')).resolve() != Path(workspace).resolve():
+    previous_workspace = status.get('workspace')
+    if not isinstance(previous_workspace, str) or not Path(previous_workspace).is_absolute() or Path(previous_workspace).resolve() != Path(workspace).resolve():
         raise ValueError('Resume requires the same workspace')
     if status.get('sandbox') != sandbox:
         raise ValueError('Resume requires the same sandbox; start fresh for changed permissions')
-    return status['session_id']
+    return status['session_id'].lower()
 
 def command(codex, sandbox, result, session=None):
     base = [codex, '-a', 'never', 'exec', '--json', '-o', str(result)]
