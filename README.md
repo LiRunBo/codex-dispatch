@@ -28,7 +28,7 @@ Run `python scripts/dispatch.py task.json --dry-run` to preview and `python scri
 - 这次代码你自己写。
 
 ## Scope
-v0.3.0 development prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, session resume or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
+v0.4.0 development prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
 
 ## Tests
 `python -m unittest discover -s tests -v`
@@ -41,3 +41,6 @@ The main skill loads references/routing-policy.md and scenario workflows on dema
 Chinese documentation: [README.zh-CN.md](README.zh-CN.md).
 
 From the checkout, `python scripts/install.py "<actual global skills directory>"` copies the skill without overwriting an existing installation. From the installed directory, `python scripts/doctor.py` probes Python, Codex version and login status, without invoking a model. `python scripts/skill_resolver.py` lists global sibling skills; append exact names to resolve their paths. Additional roots may be supplied with `--root` or CODEX_DISPATCH_SKILL_ROOTS (OS path separator). Ambiguities require selection. Discovery assumes conventional single-level folders with simple name frontmatter, and does not establish runtime compatibility or grant access.
+
+## Execution records and experimental continuation
+Each run stores task.json, status.json, events.jsonl, stderr.log and result.md (when produced). A successful process exit plus a completed turn event and result file is required for transport completion. After validating sandbox behavior on your installed CLI, set CODEX_DISPATCH_ENABLE_RESUME=1 to opt in, then run `python scripts/dispatch.py next-task.json --resume-run run-EXACT_ID`. Resume requires an explicitly selected completed run in the same workspace and sandbox. See references/session-policy.md. This experimental feature is not yet live-tested; use fresh sessions by default.
