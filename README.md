@@ -28,7 +28,7 @@ Run `python scripts/dispatch.py task.json --dry-run` to preview and `python scri
 - 这次代码你自己写。
 
 ## Scope
-v0.4.0 development prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
+v0.5.0 development candidate: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
 
 ## Tests
 `python -m unittest discover -s tests -v`
@@ -44,3 +44,6 @@ From the checkout, `python scripts/install.py "<actual global skills directory>"
 
 ## Execution records and experimental continuation
 Each run stores task.json, status.json, events.jsonl, stderr.log and result.md (when produced). A successful process exit plus a completed turn event and result file is required for transport completion. After validating sandbox behavior on your installed CLI, set CODEX_DISPATCH_ENABLE_RESUME=1 to opt in, then run `python scripts/dispatch.py next-task.json --resume-run run-EXACT_ID`. Resume requires an explicitly selected completed run in the same workspace and sandbox. See references/session-policy.md. This experimental feature is not yet live-tested; use fresh sessions by default.
+
+## Local trial
+See [local smoke test guide](docs/local-smoke-test.zh-CN.md) and [optional global rule](references/global-rule.md). CI runs Python compilation and unit tests on Windows, macOS and Linux. Model behavior and actual sandbox enforcement require separate local testing. Installation copies runtime assets only; use the source checkout for tests and the complete documentation.
