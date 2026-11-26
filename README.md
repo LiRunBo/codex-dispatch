@@ -28,7 +28,11 @@ Run `python scripts/dispatch.py task.json --dry-run` to preview and `python scri
 - 这次代码你自己写。
 
 ## Scope
-v0.1.0 prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, automatic skill discovery, session resume or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
+v0.2.0 development prototype: prompt-guided routing, two workflow modules, manifest validation, CLI invocation, status/log capture. No daemon, independent planner, automatic skill discovery, session resume or concurrency locking. CLI flags and live invocation need local verification. Timeout terminates the direct subprocess; child-process cleanup is not guaranteed. Use serial execution and inspect partial changes before retrying. A successful CLI exit is not scientific validation.
 
 ## Tests
 `python -m unittest discover -s tests -v`
+
+
+## Routing and evaluation
+The main skill loads references/routing-policy.md and scenario workflows on demand. Professional skills remain in the Antigravity global library. See evals/README.md for 20 behavioral test cases and the proposed release gate. The cases are specified, not yet measured against a live host. Global skill discovery remains agent-driven; there is no separate registry or automatic resolver script.
