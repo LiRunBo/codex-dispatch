@@ -10,7 +10,7 @@ Antigravity is the coordinator. Use native planning, reasoning and tools. This s
 - Read [routing policy](references/routing-policy.md) when considering delegation or an executor override.
 - For research, read [research workflow](workflows/research.md). For other complex work, read [complex task workflow](workflows/complex-task.md). Load only relevant guidance.
 - Separate discussion, planning and authorized execution. Honor explicit executor choice within its stated scope. Keep simple native tasks native unless explicitly delegated. Select cohesive handoff boundaries and avoid duplicate planning.
-- If a professional skill is involved in a handoff, read [skill bridge](references/skill-bridge.md). Resolve existing global skill paths and dependencies. Preserve ordinary native skill use.
+- If a professional skill is involved in a handoff, read [skill bridge](references/skill-bridge.md). Resolve existing global skill paths and dependencies. Preserve ordinary native skill use. Use `python <this-skill-directory>/scripts/skill_resolver.py <exact-skill-name>` for automatic sibling discovery; use `--root <actual-global-root>` when needed. Use doctor.py for preflight when setup is uncertain.
 
 ## Delegate
 - Check feasibility, authorization, inputs and acceptance criteria. Briefly announce substantial handoffs. Never silently replace an explicitly selected executor.
