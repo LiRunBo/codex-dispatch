@@ -1,0 +1,122 @@
+[
+  {
+    "id": "idea",
+    "input": "和我讨论一下这个科研 idea",
+    "expected": "native",
+    "criteria": "Discussion only; no implementation."
+  },
+  {
+    "id": "plan",
+    "input": "给我规划一下实验，先别跑",
+    "expected": "plan_only",
+    "criteria": "No CLI or experiment execution."
+  },
+  {
+    "id": "experiment",
+    "input": "实验设计定了，让 Codex 实现并测试",
+    "expected": "delegate",
+    "criteria": "One cohesive coding/testing handoff."
+  },
+  {
+    "id": "override",
+    "input": "这次代码你自己写",
+    "expected": "native",
+    "criteria": "Explicit override scoped to this request."
+  },
+  {
+    "id": "skill_codex",
+    "input": "用我全局安装的审稿 Skill，让 Codex 审稿",
+    "expected": "delegate",
+    "criteria": "Resolve exact skill path and check dependencies; read-only by default."
+  },
+  {
+    "id": "native_skill",
+    "input": "用审稿 Skill 帮我看看这篇论文",
+    "expected": "native",
+    "criteria": "Assume short review and no explicit override; preserve normal skill workflow."
+  },
+  {
+    "id": "plot",
+    "input": "数据已经确认，按确定的方案生成论文图",
+    "expected": "delegate",
+    "criteria": "Assume substantial plotting with available data and tools."
+  },
+  {
+    "id": "missing_data",
+    "input": "把还没跑的实验结果画出来",
+    "expected": "blocked",
+    "criteria": "Do not fabricate; ask for data or propose authorized experiment."
+  },
+  {
+    "id": "literature",
+    "input": "方向已经确定，系统检索并整理文献",
+    "expected": "delegate",
+    "criteria": "Assume Codex has authorized search access; verify citations."
+  },
+  {
+    "id": "incompatible",
+    "input": "用只支持反重力浏览器的 Skill，让 Codex 调研",
+    "expected": "blocked",
+    "criteria": "Explain missing capability; no silent executor replacement."
+  },
+  {
+    "id": "small_edit",
+    "input": "改一下图的标题",
+    "expected": "native",
+    "criteria": "Assume simple edit; no extra agent ceremony."
+  },
+  {
+    "id": "explicit_small",
+    "input": "让 Codex 改一下图的标题",
+    "expected": "delegate",
+    "criteria": "Explicit choice wins when feasible."
+  },
+  {
+    "id": "review",
+    "input": "让两个模型分别审稿再比较",
+    "expected": "independent_review",
+    "criteria": "Independent outputs, then synthesis."
+  },
+  {
+    "id": "paper",
+    "input": "我们先讨论论文主线",
+    "expected": "native",
+    "criteria": "No drafting or CLI unless requested."
+  },
+  {
+    "id": "general",
+    "input": "按已确认的需求实现并测试完整模块",
+    "expected": "delegate",
+    "criteria": "Keep implementation and testing together."
+  },
+  {
+    "id": "casual",
+    "input": "今天聊聊别的",
+    "expected": "native",
+    "criteria": "Do not activate research workflow."
+  },
+  {
+    "id": "scope",
+    "input": "以后这个项目的绘图交给 Codex，这次先讨论图表设计",
+    "expected": "native",
+    "criteria": "Discussion now; project preference for later execution."
+  },
+  {
+    "id": "failed",
+    "input": "Codex 超时了，继续",
+    "expected": "blocked",
+    "criteria": "Inspect partial writes and surviving processes before retry."
+  },
+  {
+    "id": "unexpected",
+    "input": "结果推翻了假设，直接写结论吧",
+    "expected": "native",
+    "criteria": "Interpret evidence; reassess claim before drafting."
+  },
+  {
+    "id": "unknown",
+    "input": "用一个找不到的 Skill 让 Codex 执行",
+    "expected": "blocked",
+    "criteria": "Resolve required skill; no invented path."
+  }
+]
