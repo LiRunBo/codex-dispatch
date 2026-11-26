@@ -14,7 +14,7 @@ Antigravity is the coordinator. Use native planning, reasoning and tools. This s
 
 ## Delegate
 - Check feasibility, authorization, inputs and acceptance criteria. Briefly announce substantial handoffs. Never silently replace an explicitly selected executor.
-- Create the JSON manifest described in [README](README.md) with actual absolute paths, relevant context, permitted changes, outputs and acceptance criteria. Use read-only by default; workspace-write only for authorized edits.
+- Create the JSON manifest described in [README](README.md) with actual absolute paths, relevant context, permitted changes, outputs and acceptance criteria. Keep manifests outside tracked files and do not include credentials. For an explicit planning-only request, delegate read-only planning only if requested, never implementation. Use read-only by default; workspace-write only for authorized edits.
 - Run `python <this-skill-directory>/scripts/dispatch.py <manifest-path>`. Preview with `--dry-run`. For follow-up tasks, consult [session policy](references/session-policy.md); fresh sessions are the default, and explicit resume requires local validation and opt-in. Preserve Codex native planning; prohibit recursive use of this dispatcher. Never bypass sandbox or approval controls.
 
 ## Return
