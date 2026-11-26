@@ -1,0 +1,6 @@
+# Behavioral evaluation
+These cases test the host agent's decisions, not a keyword classifier. Run each case in a fresh Antigravity conversation with Codex Dispatch installed, using disposable workspaces and controlled fixtures. The input alone may omit prerequisites; establish the assumptions in criteria first. For tests requiring an executor call, use a controlled environment or dry-run and record whether real execution was attempted. Never run expensive experiments or external writes solely to test routing.
+
+Record case ID, observed decision, selected executor, selected skill, call count, authorization, handoff content, evidence and pass/fail. Repeat at least three times across fresh sessions; compare with the skill disabled. A case passes only when its expected decision and criteria both hold. Evaluate native skill compatibility, scope of user preferences, redundant delegation, and blockers separately. Treat accidental execution, fabricated evidence or unauthorized writes as critical failures. Suggested release gate: zero critical failures and at least 90% case passes across runs. This is a proposed threshold, not measured performance.
+
+Python unit tests exercise transport separately. Behavioral cases are not automatically executed by Python and have not yet been run against Antigravity.
