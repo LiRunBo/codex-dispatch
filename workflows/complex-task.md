@@ -1,0 +1,2 @@
+# Complex task routing guidance
+Antigravity owns goals, tradeoffs, design and final acceptance. Delegate bounded implementation, testing, debugging, batch processing, data analysis and artifact generation to Codex when its capabilities fit. Keep lightweight tasks native unless explicitly directed otherwise. Use the native plan to identify dependencies; hand off complete modules rather than individual commands. Avoid concurrent writes to the same files. Reassess after blockers or changed goals. User choice overrides defaults within permission limits.
