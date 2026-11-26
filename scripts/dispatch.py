@@ -30,6 +30,9 @@ def prepare(task):
     skills = task.get('skills', [])
     if not isinstance(skills, list) or not all(isinstance(s, str) for s in skills):
         raise ValueError('skills must be a list of absolute directory paths')
+    for key in ('deliverables', 'acceptance_criteria'):
+        if key in task and (not isinstance(task[key], list) or not all(isinstance(v, str) and v.strip() for v in task[key])):
+            raise ValueError(f'{key} must be a list of nonempty strings')
     paths = []
     for s in skills:
         p = Path(s).expanduser()
@@ -87,7 +90,7 @@ def main():
             if session and trace['session_id'] != session:
                 code = 1
                 status['warning'] = 'Resumed session identity could not be verified'
-            if code == 0 and (trace['terminal_event'] != 'turn.completed' or not (run / 'result.md').is_file()):
+            if code == 0 and (trace['terminal_event'] != 'turn.completed' or not (run / 'result.md').is_file() or not (run / 'result.md').read_text(encoding='utf-8', errors='replace').strip()):
                 code = 1
                 status['warning'] = 'Missing completion evidence or final response'
             status.update(state='completed' if code == 0 else 'failed', exit_code=code)
@@ -100,7 +103,7 @@ def main():
             status['finished_at'] = datetime.now(timezone.utc).isoformat()
             write_status(run / 'status.json', status)
         return code
-    except (ValueError, OSError) as e:
+    except (ValueError, OSError, RuntimeError) as e:
         print(f'Dispatch blocked: {e}', file=sys.stderr)
         return 2
 
