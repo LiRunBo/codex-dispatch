@@ -23,7 +23,10 @@ python scripts/skill_resolver.py peer-review
 主控选择任务边界、传递上下文和 Skill 路径，Codex 自主执行。论文写作与审稿动态选择。权限和工具兼容性需要检查。
 
 ## 当前限制
-v0.4 开发版。自动发现支持常规单层全局 Skill 目录和简单 name 元数据，不是完整 YAML 解析器。路径发现不代表 Codex 能读取或运行 Skill。doctor 只检查版本与登录状态，不调用模型。客户端自动触发、真实委派、网络权限和专属工具仍需本地验证。会话续接为实验功能，默认关闭。暂不支持并发控制。详见英文 README 和 evals/README.md。
+v0.5 试用候选版。自动发现支持常规单层全局 Skill 目录和简单 name 元数据，不是完整 YAML 解析器。路径发现不代表 Codex 能读取或运行 Skill。doctor 只检查版本与登录状态，不调用模型。客户端自动触发、真实委派、网络权限和专属工具仍需本地验证。会话续接为实验功能，默认关闭。暂不支持并发控制。详见英文 README 和 evals/README.md。
 
 ## 会话与恢复
 每次调用记录任务、状态、JSONL 事件、错误日志和最终回复（如生成）。在本地验证当前 CLI 的沙箱约束后，设置环境变量 CODEX_DISPATCH_ENABLE_RESUME=1，使用 `python scripts/dispatch.py next-task.json --resume-run run-实际ID` 续接已完成的任务。必须保持工作目录和沙箱权限一致。默认新建会话。失败或超时后先检查文件变化及残留子进程，再决定是否重试。详见 references/session-policy.md。
+
+## 本地联调
+参考 [本地试用与验收](docs/local-smoke-test.zh-CN.md)。可选的 [全局调度规则](references/global-rule.md) 由用户自行添加。GitHub Actions 执行跨平台单元测试；实际模型行为和沙箱仍需本地验证。安装器只复制运行文件，测试和完整文档请在源码仓库查看。
