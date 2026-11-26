@@ -15,7 +15,17 @@ def main():
         p.error('Provide the existing global skills directory used by your client')
     if target.exists() or target.is_symlink() or source == target or source in target.parents:
         p.error('Target exists or overlaps source; review and update manually')
-    shutil.copytree(source, target, ignore=shutil.ignore_patterns('.git', '__pycache__', '*.pyc', '.env', '.dispatch'))
+    # Install only runtime assets; never copy arbitrary checkout files or secrets.
+    target.mkdir()
+    for name in ('SKILL.md', 'README.md', 'README.zh-CN.md'):
+        shutil.copy2(source / name, target / name)
+    for folder in ('scripts', 'references', 'workflows'):
+        src = source / folder
+        dest = target / folder
+        dest.mkdir()
+        for item in src.iterdir():
+            if item.is_file() and not item.is_symlink() and item.suffix in ('.py', '.md'):
+                shutil.copy2(item, dest / item.name)
     print(f'Installed: {target}')
     print(f'Run: python "{target / "scripts" / "doctor.py"}"')
     return 0
