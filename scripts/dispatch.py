@@ -7,6 +7,8 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime, timezone
+import os
+from session_manager import scan_events, load_previous, command, write_status
 
 
 def prepare(task):
@@ -50,38 +52,53 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('manifest', type=Path)
     parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--resume-run', help='Resume an explicitly selected completed local run')
     args = parser.parse_args()
     try:
         task = json.loads(args.manifest.read_text(encoding='utf-8'))
         workspace, sandbox, timeout, prompt = prepare(task)
+        root = Path.home() / '.codex-dispatch' / 'runs'
+        session = None
+        if args.resume_run:
+            if os.environ.get('CODEX_DISPATCH_ENABLE_RESUME') != '1':
+                raise ValueError('Resume is experimental; enable only after local sandbox smoke tests')
+            session = load_previous(root, args.resume_run, workspace, sandbox)
         if args.dry_run:
-            print(json.dumps({'workspace': str(workspace), 'sandbox': sandbox, 'timeout': timeout, 'prompt': prompt}, ensure_ascii=False, indent=2))
+            print(json.dumps({'workspace': str(workspace), 'sandbox': sandbox, 'timeout': timeout, 'session_id': session, 'prompt': prompt}, ensure_ascii=False, indent=2))
             return 0
         codex = shutil.which('codex')
         if not codex:
             raise ValueError('codex executable not found on PATH')
-        root = Path.home() / '.codex-dispatch' / 'runs'
         root.mkdir(parents=True, exist_ok=True)
         run = Path(tempfile.mkdtemp(prefix='run-', dir=root))
         print(f'Run directory: {run}', flush=True)
         (run / 'task.json').write_text(json.dumps(task, ensure_ascii=False, indent=2), encoding='utf-8')
-        cmd = [codex, '-a', 'never', 'exec', '--sandbox', sandbox, '-o', str(run / 'result.md'), '-']
-        status = {'started_at': datetime.now(timezone.utc).isoformat(), 'state': 'running'}
-        (run / 'status.json').write_text(json.dumps(status), encoding='utf-8')
+        cmd = command(codex, sandbox, run / 'result.md', session)
+        status = {'started_at': datetime.now(timezone.utc).isoformat(), 'state': 'running',
+                  'workspace': str(workspace), 'sandbox': sandbox, 'previous_run': args.resume_run}
+        write_status(run / 'status.json', status)
         code = 1
         try:
-            with (run / 'stdout.log').open('wb') as out, (run / 'stderr.log').open('wb') as err:
+            with (run / 'events.jsonl').open('wb') as out, (run / 'stderr.log').open('wb') as err:
                 p = subprocess.run(cmd, input=prompt.encode('utf-8'), cwd=workspace, stdout=out, stderr=err, timeout=timeout, check=False)
             code = p.returncode
+            trace = scan_events(run / 'events.jsonl')
+            status.update(trace)
+            if session and trace['session_id'] != session:
+                code = 1
+                status['warning'] = 'Resumed session identity could not be verified'
+            if code == 0 and (trace['terminal_event'] != 'turn.completed' or not (run / 'result.md').is_file()):
+                code = 1
+                status['warning'] = 'Missing completion evidence or final response'
             status.update(state='completed' if code == 0 else 'failed', exit_code=code)
         except subprocess.TimeoutExpired:
             code = 124
             status.update(state='timeout', exit_code=code, warning='Inspect partial changes and surviving subprocesses before retrying')
         except (OSError, KeyboardInterrupt) as e:
-            status.update(state='interrupted', error=str(e))
+            status.update(state='interrupted', error=str(e), exit_code=code)
         finally:
             status['finished_at'] = datetime.now(timezone.utc).isoformat()
-            (run / 'status.json').write_text(json.dumps(status, indent=2), encoding='utf-8')
+            write_status(run / 'status.json', status)
         return code
     except (ValueError, OSError) as e:
         print(f'Dispatch blocked: {e}', file=sys.stderr)
